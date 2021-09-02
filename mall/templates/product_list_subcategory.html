@@ -1,0 +1,150 @@
+{% extends 'layout.html' %}
+{% block title %}
+{{prod.0.product_subcat}} | TholeMall
+{% endblock title %}
+{% block body %}
+<style>
+    .row a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .row a:hover {
+        box-shadow: 0 .8rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+
+    .subcats-box a{
+        color: inherit;
+    }
+    .subcats-box a:hover{
+        background: rgb(218, 218, 255);
+    }
+</style>
+<div class="container-fluid p-2 d-flex">
+    <div class="col-md-2 bg-white border shadow p-0 align-self-start">
+        <div class="sort-by py-2">
+            <h5 class="pl-4 py-2">Sort By</h5>
+            <hr class="my-1">
+            <div class="pl-4">
+                <div class="form-check py-1">
+                    <input class="form-check-input" type="radio" name="sort-by" id="price-low-to-high"
+                        value="Price Low to High">
+                    <label class="form-check-label" for="price-low-to-high">
+                        Price-- Low to High
+                    </label>
+                </div>
+                <div class="form-check py-1">
+                    <input class="form-check-input" type="radio" name="sort-by" id="price-high-to-low"
+                        value="Price High to Low">
+                    <label class="form-check-label" for="price-high-to-low">
+                        Price-- High to Low
+                    </label>
+                </div>
+                <div class="form-check py-1">
+                    <input class="form-check-input" type="radio" name="sort-by" id="newest-first" value="Newest First">
+                    <label class="form-check-label" for="newest-first">
+                        Newest First
+                    </label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="filters">
+            <h5 class="pl-4 py-2">Filters</h5>
+            <hr class="my-1">
+
+            <div class="py-1 px-4">
+                <h6 class="">PRICE</h6>
+                <div class="middle py-1">
+                    <div class="multi-range-slider">
+                        <input type="range" id="input-left" min="0" max="{{max_price}}" value="0">
+                        <input type="range" id="input-right" min="0" max="{{max_price}}" value="{{max_price}}">
+
+                        <div class="slider">
+                            <div class="track"></div>
+                            <div class="range"></div>
+                            <div class="thumb left"></div>
+                            <div class="thumb right"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="py-3 d-flex justify-content-between">
+                    <input type="text" id="min-value" value="&#8377;0" class="text-center" style="width: 30%;" readonly>
+                    <p class="p-0 m-0">to</p>
+                    <input type="text" id="max-value" value="&#8377;{{max_price}}" class="text-center"
+                        style="width: 30%;" readonly>
+                </div>
+            </div>
+
+            {% if cat_page %}
+                <hr>
+                <div class="py-1 px-4 subcats-box">
+                    <h6>SUBCATEGORIES</h6>
+                    {% for i in subcats_in_this_cat %}
+                        <a class="nav-link" href="{% url 'ProdListSubcategory' i.subcat_cat.cat_slug i.subcat_slug %}">{{i.subcat_name}}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- <div class="accordion" id="accordionExample">
+                <div class="card bg-white border-0">
+                    <div class="card-header bg-white border-0 p-0 py-1 pl-2 m-0" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn text-left" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <strong>Collapsible Group Item #1</strong> 
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                        data-parent="#accordionExample">
+                        <div class="card-body p-0 pl-4 mt-0">
+                            Some placeholder content for the first accordion panel. This panel is shown by default,
+                            thanks to the <code>.show</code> class.
+                        </div>
+                    </div>
+                </div>
+                <hr class="m-0">
+            </div> -->
+        </div>
+    </div>
+    <div class="col-md-10 align-self-start">
+        <div class="bg-white border shadow px-3">
+            {% if prod %}
+                <nav>
+                    <ol class="breadcrumb bg-transparent px-0 mb-0">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        {% if cat_page %}
+                            <li class="breadcrumb-item active">{{prod.0.product_cat}}</li>
+                        {% else %}
+                            <li class="breadcrumb-item"><a href="{% url 'ProdListCategory' prod.0.product_cat.cat_slug %}">{{prod.0.product_cat}}</a></li>
+                            <li class="breadcrumb-item active">{{prod.0.product_subcat}}</li>
+                        {% endif %}
+                    </ol>
+                </nav>
+                {% if cat_page %}
+                    <h5>{{prod.0.product_cat}}</h5>
+                {% else %}
+                    <h5>{{prod.0.product_subcat}}</h5>
+                {% endif %}
+                
+                <div class="row">
+                    {% for prod in prod %}
+                    <a href="{% url 'ProductView' prod.product_slug %}" class="card" style="width:19.5%; margin: 2px 2px;">
+                        <img src="/media/{{prod.product_img}}" class="card-img-top"
+                            style="height: 250px; object-fit: contain;" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{prod.product_name|slice:':50'}}</h5>
+                            <p class="price">&#8377;{{ prod.product_price }} <span class="mrp">&#8377;{{ prod.product_mrp}}</span></p>
+                        </div>
+                    </a>
+                    {% endfor %}
+
+                </div>
+            {% else %}
+                Nothing to show here
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

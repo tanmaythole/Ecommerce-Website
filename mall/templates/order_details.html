@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+{% block title %}
+    Order Information | {{user.first_name}}
+{% endblock title %}
+{% block body %}
+<style>
+    .order-box{
+        color: inherit;
+    }
+    .order-box .d-flex{
+        align-items: center;
+    }
+    .order-box:hover{
+        cursor: pointer;
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    .order-box-container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+    <div class="container">
+        <nav>
+            <ol class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'Profile' %}">My Account</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'Orders' %}">My Orders</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{orders.0.order_id}}</li>
+            </ol>
+        </nav>
+
+        <div class="my-4 border shadow bg-white p-4">
+            <h5>Delivary Address</h5>
+            <h6>{{item.user_name}}</h6>
+            <p>{{item.address}}, <br>{{item.city}}, {{item.state}} - {{item.pincode}}</p>
+            <h6>Mobile No.: {{item.mobile}}</h6>
+        </div>
+
+        <div class="my-4 border shadow bg-white p-4 form-inline">
+            <div class="d-flex w-50">
+                <img src="/media/{{item.order_products.product_img}}" style="width: 100px; height: 100px; object-fit: contain;" alt="">
+                <div class="">
+                    <a href="{% url 'ProductView' item.order_products.product_slug %}">{{item.order_products.product_name|slice:":50"}}</a>
+                    <p>{{item.order_products.product_cat}} - {{item.order_products.product_subcat}}</p>
+                    <h6>&#8377; {{item.order_products.product_price}}</h6>
+                </div>
+            </div>
+            <div class="progressbar">
+                {% if item.order_status == "Payment Failed" %}
+                    <p class="text-danger text-center">Payment Failed</p>
+                {% else %}    
+                    <ul class="list-unstyled multi-steps">
+                        <li {% if item.order_status == "Requested" or item.order_status == "Accepted" or item.order_status == "Payment Success" %}class="is-active"{% endif %}>Ordered</li>
+                        <li {% if item.order_status == "Packed" %} class="is-active" {% endif %}>Packed</li>
+                        <li {% if item.order_status == "Shipped" or item.order_status == "On The Way" %}class="is-active"{%endif%}>Shipped</li>
+                        <li {% if item.order_status == "Delivered" %}class="is-active"{%endif%}>Delivered</li>
+                    </ul>
+                    {% if item.order_status == "Delivered" %}
+                        <p>Your item has been delivered </p>
+                    {% endif %}
+                {% endif %}
+            </div>
+                
+        </div>
+
+        <div class="my-4 border shadow bg-white ">
+            <h4 class="px-3 pt-3">Other items in this order</h4>
+            <hr>
+            {% for i in orders %}
+                <a href="/order_details/?order_id={{i.order_id}}&&item_id={{i.id}}" class="bg-white border my-3 order-box">
+                    <div class="order-box-container" style="width: 70%; margin: auto;">
+                        <div class="d-flex">
+                            <img style="height: 150px; width: 150px; object-fit: contain; padding: 10px;" src="/media/{{i.order_products.product_img}}" alt="">
+                            <div class="prod-info">
+                                <h6>{{i.order_products.product_name|slice:':50'}}</h6>
+                                <p>{{i.order_products.product_cat}} - {{i.order_products.product_subcat}}</p>
+                                <p>Quantity: {{i.prod_quantity}}</p>
+                                <div class="prod-price">
+                                    &#8377; {{i.order_products.product_price}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status">
+                            {% if i.order_status == 'Returned' or i.order_status == 'Refunded'  %}
+                                <div class="d-flex" style="max-height: 10px;">
+                                    <label class="bg-warning text-warning" style="height: 10px !important; width: 10px !important; border-radius: 100%;"></label>&nbsp;
+                                    <label for="" class="text-warning">{{i.order_status}}</label>
+                                </div>
+                            {% elif i.order_status == 'Payment Success' or i.order_status == 'Delivered' or  i.order_status == 'Accepted' or i.order_status == 'Requested' or i.order_status == 'Packed' or i.order_status == 'Shipped' or i.order_status == 'On The Way'  %}
+                                <div class="d-flex" style="max-height: 10px;">
+                                    <label class="bg-success text-success" style="height: 10px !important; width: 10px !important; border-radius: 100%;"></label>&nbsp;
+                                    <label for="" class="text-success">{{i.order_status}}</label>
+                                </div>
+                            {% else %}
+                                <div class="d-flex" style="max-height: 10px;">
+                                    <label class="bg-danger text-danger" style="height: 10px !important; width: 10px !important; border-radius: 100%;"></label>&nbsp;
+                                    <label for="" class="text-danger">{{i.order_status}}</label>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+{% endblock body %}

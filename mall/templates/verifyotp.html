@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <div class="container col-md-6">
+        <div class="card my-5">
+            <div class="card-header">
+                Verify Your Account
+            </div>
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show" role="alert">
+                    <strong>{% if message.tags == 'error' %}Error{% else %}Success{% endif %}!</strong> {{message}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            <div class="card-body">
+                <h5 class="card-title">Hello, {{user.first_name}}</h5>
+                <p class="card-text">Kindly verify your account with Email otp.</p>
+                <form action="{% url 'VerifyAccount' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="userinfo" value={{user.email}}>
+                    <div class="form-group">
+                        <label for="otp">Enter OTP:</label>
+                        <input type="number" name="otp" id="otp" class="form-control">
+                    </div>
+                    <input type="submit" value="Verify" name="verifyotp" class="btn btn-primary">
+                    <input type="submit" value="Resend OTP" name="resendOtp" class="btn btn-warning">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

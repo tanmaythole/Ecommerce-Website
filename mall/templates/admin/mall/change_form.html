@@ -1,0 +1,36 @@
+{% extends "admin/change_form.html" %} {% load static %}
+{{ block.super }}
+{% block extrahead %}
+{% load static %}
+<script src="/admin/jsi18n/"></script>
+<script src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script src="/static/admin/js/calendar.js"></script>
+<script src="/static/admin/js/jquery.init.js"></script>
+<script src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script src="/static/admin/js/core.js"></script>
+<script src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script src="/static/admin/js/actions.js"></script>
+<script src="/static/admin/js/urlify.js"></script>
+<script src="/static/admin/js/prepopulate.js"></script>
+<script src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        // inspect html to check id of category select dropdown.
+        if(!$('select#id_product_cat').val()){
+            $("select#id_product_subcat").html('<option value="" disabled selected>-----Select Category----</option>');
+        }
+        $('select#id_product_cat').on("change",  function () {
+            $.getJSON("/getsubcategory", { id: $(this).val() }, function (j) {
+                var options = '<option value="">---------</option>';
+                for (var i = 0; i < j.length; i++) {
+                    options +=
+                        '<option value="' + j[i].id + '">' + j[i].subcat_name + "</option>";
+                }
+                // inspect html to check id of subcategory select dropdown.
+                $("select#id_product_subcat").html(options);
+            });
+        });
+    });
+</script>
+{% endblock %}

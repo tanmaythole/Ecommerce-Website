@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% block title %}
+    Orders | {{user.first_name}}
+{% endblock title %}
+{% block body %}
+<style>
+    .order-box{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        color: inherit;
+    }
+    .order-box .d-flex{
+        align-items: center;
+    }
+    .order-box:hover{
+        cursor: pointer;
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+</style>
+    <div class="container">
+        <nav>
+            <ol class="breadcrumb bg-transparent">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'Profile' %}">My Account</a></li>
+              <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+            </ol>
+        </nav>
+
+        {% for i in orders %}
+            <a href="/order_details/?order_id={{i.order_id}}&&item_id={{i.id}}" class="bg-white border my-3 order-box">
+                <div class="d-flex">
+                    <img style="height: 150px; width: 150px; object-fit: contain; padding: 10px;" src="/media/{{i.order_products.product_img}}" alt="">
+                    <div class="prod-info">
+                        <h6>{{i.order_products.product_name|slice:':50'}}</h6>
+                        <p>{{i.order_products.product_cat}} - {{i.order_products.product_subcat}}</p>
+                        <p>Quantity: {{i.prod_quantity}}</p>
+                    </div>
+                </div>
+                <div class="prod-price">
+                    &#8377; {{i.order_products.product_price}}
+                </div>
+                <div class="status">
+                    {% if i.order_status == 'Returned' or i.order_status == 'Refunded'  %}
+                        <div class="d-flex" style="max-height: 10px;">
+                            <label class="bg-warning text-warning" style="height: 10px !important; width: 10px !important; border-radius: 100%;"></label>&nbsp;
+                            <label for="" class="text-warning">{{i.order_status}}</label>
+                        </div>
+                    {% elif i.order_status == 'Payment Success' or i.order_status == 'Delivered' or  i.order_status == 'Accepted' or i.order_status == 'Requested' or i.order_status == 'Packed' or i.order_status == 'Shipped' or i.order_status == 'On The Way'  %}
+                        <div class="d-flex" style="max-height: 10px;">
+                            <label class="bg-success text-success" style="height: 10px !important; width: 10px !important; border-radius: 100%;"></label>&nbsp;
+                            <label for="" class="text-success">{{i.order_status}}</label>
+                        </div>
+                    {% else %}
+                        <div class="d-flex" style="max-height: 10px;">
+                            <label class="bg-danger text-danger" style="height: 10px !important; width: 10px !important; border-radius: 100%;"></label>&nbsp;
+                            <label for="" class="text-danger">{{i.order_status}}</label>
+                        </div>
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock body %}

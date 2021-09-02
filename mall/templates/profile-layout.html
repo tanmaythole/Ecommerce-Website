@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block body %}
+{% load static %}
+    <div class="container my-3 d-flex" id="profileLayout">
+        <div class="col-md-3 p-0 mr-2">
+            <div class="p-2 border bg-white d-flex shadow">
+                <img src="{% static 'icons/user.svg' %}" alt="">
+                <div class="pl-2">
+                    Hello, 
+                    <h5>
+                        {{user.first_name}} {{user.last_name}}
+                    </h5>
+                </div>
+            </div>
+
+            <div class="my-3 py-4 border shadow bg-white navigation">
+                <a href="{% url 'Profile' %}" class="{% block a.profile %}{% endblock a.profile %}">Personal Information</a>
+                <a href="{% url 'Addresses' %}" class="{% block a.maddresses %}{% endblock a.maddresses %}">Manage Addresses</a>
+                <a href="{% url 'ChangePassword' %}" class="{% block a.changepass %}{% endblock a.changepass %}">Change Password</a>
+                <hr>
+                <a href="{% url 'Orders' %}" class="{% block a.orders %}{% endblock a.orders %}">My Orders</a>
+                <hr>
+                <a href="{% url 'LogOut' %}" class="text-danger logout">Log Out</a>
+
+            </div>
+        </div>
+        <div class="col-md-8 border p-4 mx-2 bg-white shadow">
+            {% block profile %}
+                
+            {% endblock profile %}
+        </div>
+    </div>
+{% endblock body %}

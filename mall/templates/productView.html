@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block title %}
+    {{prod.0.product_name}}
+{% endblock title %}
+{% block body %}
+    <div class="container" id="productView">
+        <div class="float-left mt-4 prod-img-section">
+
+                <!-- {{prod.0.product_name}} -->
+                <img src="/media/{{ prod.0.product_img }}" alt="">
+                <div id="{{ prod.0.id }}" class="btns my-2">
+                    <input type="hidden" name="csrf" value="{{ csrf_token }}">
+                    {% if incart is True %}
+                        <a href="{% url 'Cart' %}" class="btn btn-success">GO TO CART</a>
+                    {% else %}
+                        <a class="btn btn-warning add-to-cart">ADD TO CART</a>
+                    {% endif %}
+                    <a href="{% url 'Checkout' %}?ref={{ prod.0.product_slug }}" class="btn btn-danger">BUY NOW</a>
+                </div>
+        </div>
+        <div class="float-left mt-4" id="productinfo">
+            <nav>
+                <ol class="breadcrumb bg-transparent">
+                  <li class="breadcrumb-item"><a href="/">Home</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'ProdListCategory' prod.0.product_cat.cat_slug %}">{{prod.0.product_cat}}</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'ProdListSubcategory' prod.0.product_cat.cat_slug prod.0.product_subcat.subcat_slug %}">{{prod.0.product_subcat}}</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{prod.0.product_name|slice:":19"}}...</li>
+                </ol>
+            </nav>
+            <div class="productInfo">
+                <h3>{{prod.0.product_name}}</h3>
+                <p class="price">&#8377;{{prod.0.product_price}} <strike class="mrp"> &#8377;{{prod.0.product_mrp}} </strike> <span class="off">{{ off }}% off</span></p>
+                <p class="desc">
+                    {{prod.0.product_desc}}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
